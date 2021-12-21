@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import data from "./data";
 import replyIcon from "./images/icon-reply.svg";
 import plus from "./images/icon-plus.svg";
@@ -20,7 +20,6 @@ export const Home = () => {
   const [replyInput, setReplyInput] = useState("");
   const [innerReply, setInnerReply] = useState("");
   const [isInnerReply, setIsInnerReply] = useState(false);
-  const [newScore, setNewScore] = useState("");
 
   // array we get from the localStorage storage---------------------------
   const allComments =
@@ -44,7 +43,6 @@ export const Home = () => {
 
   // storing the selected item id in a state-------------------------
   const replyComment = (id) => {
-    const specificReply = everyComments.find((item) => item.id === id);
     setReplyID(id);
     setIsReply(true);
   };
@@ -289,9 +287,6 @@ export const Home = () => {
                             <div
                               className="reply-button-container"
                               onClick={() => {
-                                const specificReply = replies.find(
-                                  (item) => item.id === id
-                                );
                                 setInnerReplyID(id);
                                 setIsInnerReply(true);
                                 console.log(innerReplyID);

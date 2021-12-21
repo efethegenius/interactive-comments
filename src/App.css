@@ -17,6 +17,12 @@
 }
 html {
   font-family: var(--rubik);
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 body {
   background-color: var(--Light-gray);
@@ -37,7 +43,6 @@ body {
   margin-top: 40px;
   width: 100%;
   max-width: 565px;
-  /* margin-bottom: 250px; */
 }
 .comments-wrapper {
   background-color: var(--White);
@@ -108,7 +113,6 @@ body {
   width: 34px;
 }
 .content {
-  /* background-color: yellow; */
   margin-bottom: 50px;
   text-align: left;
   color: var(--Grayish-Blue);
@@ -132,6 +136,9 @@ body {
   padding: 5px 8px;
   background-color: var(--Light-gray);
   border-radius: 7px;
+}
+.score-container img:hover {
+  cursor: pointer;
 }
 .score-container p {
   color: var(--Moderate-blue);
@@ -178,9 +185,6 @@ body {
 }
 .main-reply {
   width: 100%;
-  /* position: fixed; */
-  /* bottom: 0; */
-  /* background-color: rgba(0, 0, 0, 0.361); */
   border-radius: 8px;
   width: 100%;
   display: flex;
@@ -190,7 +194,6 @@ body {
 }
 .main-reply-wrapper {
   width: 302px;
-  /* background-color: red; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -233,7 +236,6 @@ body {
 #innerReply:focus {
   outline: none !important;
   border-color: var(--Dark-blue);
-  /* box-shadow: 0 0 10px #719ECE; */
 }
 .btn-send,
 .inner-reply-form button {
@@ -279,14 +281,12 @@ body {
   margin-bottom: 15px;
 }
 .comment-edit-wrapper {
-  /* background-color: blue; */
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: row;
   position: absolute;
   right: 10px;
-  /* width: 120px; */
   max-width: 120px;
 }
 .comment-edit-wrapper button {
@@ -464,7 +464,6 @@ body {
   width: 100%;
 }
 .all-replies-wrapper .content {
-  /* width: 100%; */
   overflow-wrap: break-word;
 }
 .main-reply-form {
@@ -476,7 +475,6 @@ body {
 }
 .del {
   text-transform: capitalize;
-  /* font-size: 0.9rem; */
   font-weight: 500 !important;
   font-family: var(--rubik);
   background-color: transparent;
@@ -493,6 +491,10 @@ body {
   font-size: 1.3rem;
   color: var(--Moderate-blue);
   margin-top: 20px;
+}
+.creator {
+  margin-bottom: 20px;
+  font-size: 0.9rem;
 }
 @media screen and (min-width: 600px) {
   .del {
