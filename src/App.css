@@ -22,6 +22,12 @@ body {
   background-color: var(--Light-gray);
   padding: 0 20px;
 }
+.App {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
 .comments-container {
   display: flex;
   align-items: center;
@@ -29,6 +35,9 @@ body {
   flex-direction: column;
   position: relative;
   margin-top: 40px;
+  width: 100%;
+  max-width: 565px;
+  /* margin-bottom: 250px; */
 }
 .comments-wrapper {
   background-color: var(--White);
@@ -64,9 +73,8 @@ body {
 .username-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   flex-direction: row;
-  width: 123px;
 }
 .reply-button-container {
   position: absolute;
@@ -77,6 +85,12 @@ body {
   justify-content: space-between;
   flex-direction: row;
   width: 60px;
+  height: 19px;
+  transition: all 0.4s ease-in-out;
+}
+.reply-button-container:hover {
+  opacity: 0.5;
+  cursor: pointer;
 }
 .reply-button-container p {
   color: var(--Moderate-blue);
@@ -97,8 +111,8 @@ body {
   /* background-color: yellow; */
   margin-bottom: 50px;
   text-align: left;
-  color: var(--Dark-blue);
-  font-size: 0.9rem;
+  color: var(--Grayish-Blue);
+  font-size: 0.85rem;
   line-height: 23px;
   align-self: flex-start;
 }
@@ -155,50 +169,74 @@ body {
   background-color: var(--White);
   padding: 20px 0;
   border-radius: 10px;
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   margin: 20px 0;
+  width: 100%;
 }
-.main-reply-wrapper {
-  width: 302px;
+.main-reply {
+  width: 100%;
+  /* position: fixed; */
+  /* bottom: 0; */
+  /* background-color: rgba(0, 0, 0, 0.361); */
+  border-radius: 8px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
-.reply-footer {
-  margin-top: 15px;
+.main-reply-wrapper {
+  width: 302px;
+  /* background-color: red; */
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-direction: row;
-  width: 100%;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
 }
-.reply-footer img {
+.user-avatar {
   width: 34px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.btn-send {
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 #mainReply {
+  margin-bottom: 40px;
+}
+#mainReply,
+#replyInput,
+#innerReply {
   border-radius: 10px !important;
   border: 1px solid rgba(0, 0, 0, 0.194);
   padding: 15px;
   font-family: var(--rubik);
   color: var(--Dark-blue);
 }
-#mainReply::placeholder {
+#mainReply::placeholder,
+#replyInput::placeholder,
+#innerReply::placeholder {
   font-family: var(--rubik);
   font-weight: 500;
   font-size: 0.9rem;
   color: var(--Grayish-Blue);
 }
-#mainReply:focus {
+#mainReply:focus,
+#replyInput:focus,
+#innerReply:focus {
   outline: none !important;
   border-color: var(--Dark-blue);
   /* box-shadow: 0 0 10px #719ECE; */
 }
-.btn-send {
+.btn-send,
+.inner-reply-form button {
   padding: 10px 20px;
   font-family: var(--rubik);
   font-weight: 500;
@@ -232,7 +270,6 @@ body {
   color: var(--Dark-blue);
 }
 .comment-edit {
-  background-color: red;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -259,11 +296,30 @@ body {
   font-weight: 500;
 }
 .btn-delete {
-  margin-left: 5px;
   color: var(--Soft-Red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  transition: all ease-in-out 0.5s;
+}
+.btn-delete:hover,
+.btn-edit:hover {
+  opacity: 0.5;
+  cursor: pointer;
 }
 .btn-edit {
+  margin-left: 10px;
   color: var(--Moderate-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  transition: all ease-in-out 0.5s;
+}
+.btn-edit img,
+.btn-delete img {
+  margin-right: 3px;
 }
 .delete-background {
   background-color: rgba(0, 0, 0, 0.293);
@@ -287,6 +343,7 @@ body {
   flex-direction: column;
   border-radius: 10px;
   padding: 25px;
+  max-width: 387px;
 }
 .delete-container p {
   margin: 10px 0;
@@ -300,7 +357,6 @@ body {
 .delete-container button {
   background-color: transparent;
   border: none;
-  /* background-color: pink; */
   color: white;
   width: 45%;
   padding: 18px;
@@ -313,16 +369,201 @@ body {
   font-weight: 500;
 }
 .confirm-button-container {
-  /* background-color: red; */
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
 }
+.confirm-button-container button:hover {
+  opacity: 0.5;
+  cursor: pointer;
+}
 .confirm-cancel-btn {
   background-color: var(--Grayish-Blue) !important;
+  transition: all ease-in-out 0.5s;
 }
 .confirm-delete-btn {
   background-color: var(--Soft-Red) !important;
+  transition: all ease-in-out 0.5s;
+}
+.reply-form {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  flex-direction: row;
+}
+.reply-form button:hover {
+  opacity: 0.5;
+  cursor: pointer;
+}
+.reply-form img {
+  width: 35px;
+}
+.reply-form button {
+  padding: 8px 10px;
+  background-color: var(--Moderate-blue);
+  border: none;
+  font-family: var(--rubik);
+  color: white;
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 1px;
+  border-radius: 6px;
+  transition: all ease-in-out 0.5s;
+}
+.comment-reply-container {
+  background-color: white;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 10px;
+}
+.all-replies-wrapper {
+  width: 90%;
+}
+.inner-reply-container {
+  background-color: white;
+  width: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 10px;
+  border-radius: 10px;
+  padding: 12px;
+}
+.inner-reply-form {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: row;
+}
+#innerReply {
+  margin: 0 5px;
+}
+.inner-reply-form button {
+  border: none;
+  padding: 10px 10px;
+  cursor: pointer;
+  transition: all ease-in-out 0.5s;
+}
+.inner-reply-form button:hover {
+  opacity: 0.5;
+}
+.comments-reply-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+}
+.all-replies-wrapper .content {
+  /* width: 100%; */
+  overflow-wrap: break-word;
+}
+.main-reply-form {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.del {
+  text-transform: capitalize;
+  /* font-size: 0.9rem; */
+  font-weight: 500 !important;
+  font-family: var(--rubik);
+  background-color: transparent;
+  border: none;
+  font-size: 0.8;
+  position: absolute;
+  bottom: 17px !important;
+  right: 10px;
+}
+.replyInput {
+  width: 60%;
+}
+.heading {
+  font-size: 1.3rem;
+  color: var(--Moderate-blue);
+  margin-top: 20px;
+}
+@media screen and (min-width: 600px) {
+  .del {
+    position: unset;
+  }
+  .reply-button-container {
+    position: unset;
+  }
+  .score-container {
+    position: unset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: unset;
+    margin-right: 20px;
+  }
+  .comment-header {
+    justify-content: space-between;
+  }
+  .score-container p {
+    margin: 14px 0;
+  }
+  .comments-wrapper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: row;
+    padding: 20px;
+  }
+  .content {
+    margin-bottom: unset;
+  }
+  .main-reply-form {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    flex-direction: row;
+    width: 100%;
+  }
+  .main-reply-wrapper {
+    width: 100%;
+  }
+  .user-avatar {
+    position: unset;
+  }
+  .btn-send {
+    position: unset !important;
+  }
+  #mainReply {
+    margin-bottom: unset;
+    width: 75%;
+  }
+  .comment-edit {
+    margin-bottom: unset;
+    height: 34px;
+  }
+  .comment-edit-wrapper {
+    right: 0;
+  }
+  .inner-reply-form {
+    width: 70%;
+    justify-content: space-between;
+  }
+  #innerReply {
+    width: 90%;
+  }
+  #replyInput {
+    width: 80%;
+  }
+  .replyInput {
+    width: 70% !important;
+  }
 }

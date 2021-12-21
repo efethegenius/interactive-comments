@@ -1,50 +1,62 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import data from "./data";
 import replyIcon from "./images/icon-reply.svg";
 import plus from "./images/icon-plus.svg";
 import minus from "./images/icon-minus.svg";
+import edit from "./images/icon-edit.svg";
+import trash from "./images/icon-delete.svg";
 
 export const Home = () => {
   const [comments, setComments] = useState(data.comments);
   const [user, setUser] = useState(data.currentUser);
   const [replyVal, setReplyVal] = useState([]);
-  const [replyComment, setReplyComment] = useState("");
-  const [showTextBox, setShowTextBox] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isReply, setIsReply] = useState(false);
   const [editID, setEditID] = useState(null);
-  //   console.log(user);
+  const [replyID, setReplyID] = useState(null);
+  const [innerReplyID, setInnerReplyID] = useState(null);
+  const [removeID, setRemoveID] = useState(null);
+  const [replyInput, setReplyInput] = useState("");
+  const [innerReply, setInnerReply] = useState("");
+  const [isInnerReply, setIsInnerReply] = useState(false);
+  const [newScore, setNewScore] = useState("");
 
+  // array we get from the localStorage storage---------------------------
   const allComments =
     JSON.parse(localStorage.getItem("allComments")) || comments;
   const [everyComments, setEveryComments] = useState(allComments);
-  // console.log(everyComments);
 
-  const handleUpdate = (id) => {
-    setEveryComments(
-      everyComments.map((x) =>
-        x.id === id ? { ...x, content: replyComment } : x
-      )
-    );
-  };
+  // function for deleting main comment--------------------------
   const handleRemove = (id) => {
     setEveryComments(
       everyComments.filter((everyComment) => everyComment.id !== id)
     );
   };
 
+  // storing the selected item id in a state-------------------------
   const editComment = (id) => {
-    const specificComment = allComments.find((item) => item.id === id);
+    const specificComment = everyComments.find((item) => item.id === id);
     setIsEditing(true);
     setEditID(id);
-    setReplyVal(specificComment.content);
+    setReplyInput(specificComment.content);
   };
+
+  // storing the selected item id in a state-------------------------
+  const replyComment = (id) => {
+    const specificReply = everyComments.find((item) => item.id === id);
+    setReplyID(id);
+    setIsReply(true);
+  };
+
+  // getting the current time--------------------------------
+  let today = new Date();
+  let time = today.getHours() + ":" + today.getMinutes();
 
   return (
     <section className="comments-container">
       {showDelete && (
         <div className="delete-background">
-          (
           <div className="delete-container">
             <h3>Delete comment</h3>
             <p>
@@ -83,9 +95,39 @@ export const Home = () => {
           <div key={id} className="full-comments">
             <div className="comments-wrapper">
               <div className="score-container">
-                <img src={plus} alt="plus" />
+                {/* adding to the score------------------------------ */}
+                <img
+                  src={plus}
+                  alt="plus"
+                  onClick={() => {
+                    setEveryComments(
+                      everyComments.map((x) =>
+                        x.id === id ? { ...x, score: score + 1 } : x
+                      )
+                    );
+                    localStorage.setItem(
+                      "allComments",
+                      JSON.stringify(everyComments)
+                    );
+                  }}
+                />
                 <p>{score}</p>
-                <img src={minus} alt="minus" />
+                {/* subtracting from the score-------------------------------------- */}
+                <img
+                  src={minus}
+                  alt="minus"
+                  onClick={() => {
+                    setEveryComments(
+                      everyComments.map((x) =>
+                        x.id === id ? { ...x, score: score - 1 } : x
+                      )
+                    );
+                    localStorage.setItem(
+                      "allComments",
+                      JSON.stringify(everyComments)
+                    );
+                  }}
+                />
               </div>
               <div className="comment-details">
                 <div className="comment-header">
@@ -97,7 +139,10 @@ export const Home = () => {
                     <p className="created-at">{createdAt}</p>
                   </div>
                   {user.username !== "juliusomo" && (
-                    <div className="reply-button-container">
+                    <div
+                      className="reply-button-container"
+                      onClick={() => replyComment(id)}
+                    >
                       <img src={replyIcon} alt="reply" />
                       <p>Reply</p>
                     </div>
@@ -105,29 +150,9 @@ export const Home = () => {
                 </div>
                 <p className="content">{content}</p>
               </div>
-              {/* ----------------------------------------------------------------------------------- */}
               {user.username === "juliusomo" && (
                 <div className="comment-edit">
                   <div className="comment-edit-wrapper">
-                    {/* {!showTextBox && ( */}
-                    <button
-                      onClick={() => editComment(id)}
-                      className="btn-edit"
-                    >
-                      Edit
-                    </button>
-                    {/* )} */}
-                    {/* {showTextBox && (
-                      <button
-                        onClick={() => {
-                          handleUpdate(id);
-                          setShowTextBox(false);
-                          setReplyComment("");
-                        }}
-                      >
-                        Update
-                      </button>
-                    )} */}
                     <button
                       className="btn-delete"
                       onClick={() => {
@@ -135,100 +160,255 @@ export const Home = () => {
                         setShowDelete(true);
                       }}
                     >
+                      <img src={trash} alt="" />
                       Delete
+                    </button>
+                    <button
+                      onClick={() => editComment(id)}
+                      className="btn-edit"
+                    >
+                      <img src={edit} alt="" />
+                      Edit
                     </button>
                   </div>
                 </div>
               )}
-              {/* ---------------------------------------------------------------------------------------- */}
             </div>
+            {/* replying main comments----------------------------------------------------------- */}
+            {id === replyID
+              ? isReply && (
+                  <div className="comment-reply-container">
+                    <form className="reply-form">
+                      <img src={data.currentUser.image.png} alt="" />
+                      <textarea
+                        name="replyInput"
+                        id="replyInput"
+                        cols="23"
+                        placeholder="Add a reply..."
+                        rows="4"
+                        value={replyInput}
+                        onChange={(e) => setReplyInput(e.target.value)}
+                      ></textarea>
+                      <button
+                        type="submit"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          let thisReply = {
+                            id: new Date().getTime().toString(),
+                            content: replyInput,
+                            score: 0,
+                            user: data.currentUser,
+                            createdAt: time,
+                            replies: [],
+                            replyingTo: user.username,
+                          };
+                          replies.push(thisReply);
+                          setReplyInput("");
+                          setIsReply(false);
+                          localStorage.setItem(
+                            "allComments",
+                            JSON.stringify(everyComments)
+                          );
+                        }}
+                      >
+                        reply
+                      </button>
+                    </form>
+                  </div>
+                )
+              : null}
+            {/* end of replying main comments-------------------------------------------------------- */}
+            {/* editing main comments-------------------------------------------------------- */}
+            {id === editID
+              ? isEditing && (
+                  <div className="comment-reply-container">
+                    <form className="reply-form">
+                      <img src={data.currentUser.image.png} alt="" />
+                      <textarea
+                        name="replyInput"
+                        id="replyInput"
+                        className="replyInput"
+                        cols="23"
+                        placeholder="Edit your comment..."
+                        rows="4"
+                        value={replyInput}
+                        onChange={(e) => setReplyInput(e.target.value)}
+                      ></textarea>
+                      <button
+                        type="submit"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (replyInput && isEditing) {
+                            setEveryComments(
+                              everyComments.map((item) => {
+                                if (item.id === editID) {
+                                  return { ...item, content: replyInput };
+                                }
+                                return item;
+                              })
+                            );
+                            setReplyInput("");
+                            setEditID(null);
+                            setIsEditing(false);
+                          }
+                          localStorage.setItem(
+                            "allComments",
+                            JSON.stringify(everyComments)
+                          );
+                        }}
+                      >
+                        Update
+                      </button>
+                    </form>
+                  </div>
+                )
+              : null}
+            {/* end of editing main comments-------------------------------------------------------- */}
             <div className="reply-container">
               {replies.map((reply) => {
                 const { id, content, createdAt, score, replyingTo, user } =
                   reply;
                 return (
-                  <div key={id} className="comments-wrapper reply-wrapper">
-                    <div className="score-container">
-                      <img src={plus} alt="plus" />
-                      <p>{score}</p>
-                      <img src={minus} alt="minus" />
-                    </div>
-                    <div>
-                      <div className="comment-header">
-                        <div className="header-details">
-                          <div className="username-container">
-                            <img src={user.image.png} alt="avatar" />
-                            <p className="username">{user.username}</p>
-                          </div>
-                          <p className="created-at">{createdAt}</p>
-                        </div>
-                        <div className="reply-button-container">
-                          <img src={replyIcon} alt="reply" />
-                          <p>Reply</p>
-                        </div>
+                  <section className="comments-reply-container">
+                    <div key={id} className="comments-wrapper reply-wrapper">
+                      <div className="score-container">
+                        <img src={plus} alt="plus" />
+                        <p>{score}</p>
+                        <img src={minus} alt="minus" />
                       </div>
-                      <p className="content">
-                        {" "}
-                        <span>@{replyingTo}</span> {content}
-                      </p>
+                      <div className="all-replies-wrapper">
+                        <div className="comment-header">
+                          <div className="header-details">
+                            <div className="username-container">
+                              <img src={user.image.png} alt="avatar" />
+                              <p className="username">{user.username}</p>
+                            </div>
+                            <p className="created-at">{createdAt}</p>
+                          </div>
+                          {user.username !== "juliusomo" && (
+                            <div
+                              className="reply-button-container"
+                              onClick={() => {
+                                const specificReply = replies.find(
+                                  (item) => item.id === id
+                                );
+                                setInnerReplyID(id);
+                                setIsInnerReply(true);
+                                console.log(innerReplyID);
+                              }}
+                            >
+                              <img src={replyIcon} alt="reply" />
+                              <p>Reply</p>
+                            </div>
+                          )}
+                          {user.username === "juliusomo" && (
+                            <div>
+                              <button
+                                onClick={() => {
+                                  setRemoveID(id);
+                                  replies.pop(removeID === id);
+                                  setShowDelete(true);
+                                }}
+                                className="btn-delete del"
+                              >
+                                <img src={trash} alt="" />
+                                delete
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                        <p className="content">
+                          {" "}
+                          <span>@{replyingTo}</span> {content}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                    {/* inner reply------------------------------------------------------------ */}
+                    {id === innerReplyID
+                      ? isInnerReply && (
+                          <div className="inner-reply-container">
+                            <form className="inner-reply-form">
+                              <textarea
+                                name="innerReply"
+                                id="innerReply"
+                                cols="20"
+                                rows="3"
+                                placeholder="Add a reply..."
+                                value={innerReply}
+                                onChange={(e) => setInnerReply(e.target.value)}
+                              ></textarea>
+                              <button
+                                type="submit"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  let thisReply = {
+                                    id: new Date().getTime().toString(),
+                                    content: innerReply,
+                                    score: 0,
+                                    user: data.currentUser,
+                                    createdAt: time,
+                                    replies: [],
+                                    replyingTo: user.username,
+                                  };
+                                  replies.push(thisReply);
+                                  setInnerReply("");
+                                  setIsInnerReply(false);
+                                  localStorage.setItem(
+                                    "allComments",
+                                    JSON.stringify(everyComments)
+                                  );
+                                }}
+                              >
+                                Reply
+                              </button>
+                            </form>
+                          </div>
+                        )
+                      : null}
+                    {/* end of inner reply---------------------------------------------------------- */}
+                  </section>
                 );
               })}
             </div>
           </div>
         );
       })}
-      {/* -------------------------------------------------------------------------------- */}
-
-      {showTextBox && (
-        <div className="text-box-container">
-          <textarea
-            name="replyComment"
-            value={replyComment}
-            id="replyComment"
-            onChange={(e) => setReplyComment(e.target.value)}
-            cols="30"
-            placeholder="Edit your comment..."
-            rows="5"
-          ></textarea>
-        </div>
-      )}
-      {/* ------------------------------------------------------------------------------------- */}
-      <section className="main-reply-container">
-        <div className="main-reply-wrapper">
-          <form>
-            <textarea
-              name="mainReply"
-              id="mainReply"
-              cols="35"
-              rows="4"
-              placeholder="Add a comment..."
-              value={replyVal}
-              onChange={(e) => setReplyVal(e.target.value)}
-            ></textarea>
-            <div className="reply-footer">
-              <img src={user.image.png} alt="user avatar" />
+      <section className="main-reply">
+        <section className="main-reply-container">
+          <div className="main-reply-wrapper">
+            <form className="main-reply-form">
+              <img
+                src={user.image.png}
+                alt="user avatar"
+                className="user-avatar"
+              />
+              <textarea
+                name="mainReply"
+                id="mainReply"
+                cols="35"
+                rows="4"
+                placeholder="Add a comment..."
+                value={replyVal}
+                onChange={(e) => setReplyVal(e.target.value)}
+              ></textarea>
               <button
                 className="btn-send"
                 onClick={(e) => {
                   e.preventDefault();
+                  // if the textarea is empty--------------------------
                   if (!replyVal) {
                     console.log("Please add a comment");
-                  } else if (replyVal && isEditing) {
-                    console.log("Edit mode activated");
-                  } else {
+                  }
+                  // normal reply------------------------------
+                  else {
                     let newReply = {
                       id: new Date().getTime().toString(),
                       content: replyVal,
                       score: 0,
                       user: user,
-                      createdAT: "Just now",
+                      createdAt: time,
                       replies: [],
                     };
-                    // setEveryComments((everyComments) => {
-                    //   return [...everyComments, newReply];
-                    // });
                     setReplyVal("");
                     everyComments.push(newReply);
                     localStorage.setItem(
@@ -238,12 +418,12 @@ export const Home = () => {
                   }
                 }}
               >
-                {isEditing ? "EDIT" : "SEND"}
+                SEND
               </button>
-            </div>
-          </form>
-        </div>
-        <div></div>
+            </form>
+          </div>
+          <div></div>
+        </section>
       </section>
     </section>
   );
