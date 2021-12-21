@@ -133,6 +133,11 @@ export const Home = () => {
                     <div className="username-container">
                       <img src={user.image.png} alt="avatar" />
                       <p className="username">{user.username}</p>
+                      {user.username === "juliusomo" && (
+                        <div className="personal">
+                          <p>you</p>
+                        </div>
+                      )}
                     </div>
                     <p className="created-at">{createdAt}</p>
                   </div>
@@ -280,6 +285,11 @@ export const Home = () => {
                             <div className="username-container">
                               <img src={user.image.png} alt="avatar" />
                               <p className="username">{user.username}</p>
+                              {user.username === "juliusomo" && (
+                                <div className="personal">
+                                  <p>you</p>
+                                </div>
+                              )}
                             </div>
                             <p className="created-at">{createdAt}</p>
                           </div>

@@ -25,7 +25,7 @@ html {
   user-select: none;
 }
 body {
-  background-color: var(--Light-gray);
+  background-color: var(--Very-light-gray);
   padding: 0 20px;
 }
 .App {
@@ -495,6 +495,19 @@ body {
 .creator {
   margin-bottom: 20px;
   font-size: 0.9rem;
+}
+.personal {
+  padding: 3px;
+  background-color: var(--Moderate-blue);
+  color: white;
+  margin-left: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+}
+.personal p {
+  font-size: 0.8rem;
 }
 @media screen and (min-width: 600px) {
   .del {
