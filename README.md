@@ -1,3 +1,3 @@
-This is just a simple static landing page for a VR company/business
+A little project showcasing an interactive comment section.
 
-Live project: https://my-loopstudios.netlify.app/
+live project: https://interactivecomments.netlify.app/
